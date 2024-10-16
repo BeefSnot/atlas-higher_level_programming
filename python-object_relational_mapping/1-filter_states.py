@@ -1,35 +1,23 @@
 #!/usr/bin/python3
-"""
-This module contains the list_N_states function.
-"""
+""" script to list all states
+specifically with name starting with n """
+
 
 import MySQLdb
 import sys
 
-
-def listNStates():
-    """
-    lists all states from database hbtn_0e_0_usa
-    where state name starts with 'N'
-    """
-    db = MySQLdb.connect(
-        host="localhost",
-        port=3306,
-        user=sys.argv[1],
-        passwd=sys.argv[2],
-        db=sys.argv[3]
-    )
-
-    cur = db.cursor()
-    cur.execute(
-        "SELECT * FROM states WHERE BINARY name LIKE 'N%'")
-
-    for row in cur.fetchall():
-        print(row)
-
-    cur.close()
-    db.close()
-
-
 if __name__ == "__main__":
-    listNStates()
+    connection = MySQLdb.connect(
+        host="localhost",
+        user=sys.argv[1],
+        password=sys.argv[2],
+        database=sys.argv[3]
+    )
+    cursor = connection.cursor()
+    query = "SELECT id, name FROM states WHERE name LIKE 'N%' ORDER BY states.id ASC"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+    cursor.close()
+    connection.close()

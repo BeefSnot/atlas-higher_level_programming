@@ -1,35 +1,22 @@
 #!/usr/bin/python3
-"""
-This module contains the list_states function.
-"""
+""" module to utilize python ORM to run simple sql query """
 
 
 import MySQLdb
 import sys
 
-
-def list_states():
-    """
-    Function lists all states from database hbtn_0e_0_usa
-    """
-    db = MySQLdb.connect(
+if __name__ == "__main__":
+    connection = MySQLdb.connect(
         host="localhost",
-        port=3306,
         user=sys.argv[1],
-        passwd=sys.argv[2],
-        db=sys.argv[3]
-    )
-
-    cur = db.cursor()
-    cur.execute("SELECT * FROM states ORDER BY id ASC")
-
-    rows = cur.fetchall()
+        password=sys.argv[2],
+        database=sys.argv[3]
+        )
+    cursor = connection.cursor()
+    query = "SELECT id, name FROM states ORDER BY states.id ASC"
+    cursor.execute(query)
+    rows = cursor.fetchall()
     for row in rows:
         print(row)
-
-    cur.close()
-    db.close()
-
-
-if __name__ == "__main__":
-    list_states()
+    cursor.close()
+    connection.close()
