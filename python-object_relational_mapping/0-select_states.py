@@ -1,28 +1,35 @@
 #!/usr/bin/python3
-"""lists all states from the database hbtn_0e_0_usa"""
-import sys
+"""
+This module contains the list_states function.
+"""
+
+
 import MySQLdb
+import sys
 
 
-def list_all_states(username, password, database):
-    """connects to database and lists all states from the database hbtn_0e_0_us"""
-    conn = MySQLdb.connect(
-        host='localhost',
+def list_states():
+    """
+    Function lists all states from database hbtn_0e_0_usa
+    """
+    db = MySQLdb.connect(
+        host="localhost",
         port=3306,
-        user=username,
-        passwd=password,
-        db=database
+        user=sys.argv[1],
+        passwd=sys.argv[2],
+        db=sys.argv[3]
     )
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM states;")
+    cur = db.cursor()
+    cur.execute("SELECT * FROM states ORDER BY id ASC")
 
-    rows = cursor.fetchall()
+    rows = cur.fetchall()
     for row in rows:
-          print(row)
+        print(row)
 
-    cursor.close()
-    conn.close()
+    cur.close()
+    db.close()
+
 
 if __name__ == "__main__":
-        list_all_states(sys.argv[1], sys.argv[2], sys.argv[3])
+    list_states()
