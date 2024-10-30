@@ -1,45 +1,38 @@
 #!/usr/bin/python3
 """
-Script that lists all cities of a given state in the database hbtn_0e_4_usa.
-The state name is provided as an argument (SQL injection free).
+This module contains the filter_cities function.
 """
 import MySQLdb
-import sys
+from sys import argv
 
-if __name__ == "__main__":
-    # Get command line arguments
-    username = sys.argv[1]
-    password = sys.argv[2]
-    db_name = sys.argv[3]
-    state_name = sys.argv[4]
 
-    # Connect to the database
+def filter_cities():
+    """
+    takes state name as argument and lists all cities of that state
+    """
     db = MySQLdb.connect(
         host="localhost",
-        user=username,
-        passwd=password,
-        db=db_name,
-        port=3306
+        port=3306,
+        user=argv[1],
+        passwd=argv[2],
+        db=argv[3]
     )
 
-    # Create a cursor object
-    cursor = db.cursor()
+    cur = db.cursor()
+    cur.execute(
+        "SELECT cities.name \
+            FROM cities \
+            INNER JOIN states \
+            ON cities.state_id = states.id \
+            WHERE states.name = %s \
+            ORDER BY cities.id ASC", (argv[4],)
+    )
 
-    # Execute the query to get cities for the given state
-    query = ("SELECT cities.name "
-             "FROM cities "
-             "JOIN states ON cities.state_id = states.id "
-             "WHERE states.name = %s "
-             "ORDER BY cities.id ASC")
-    
-    cursor.execute(query, (state_name,))
+    print(", ".join([row[0] for row in cur.fetchall()]))
 
-    # Fetch all the results
-    cities = cursor.fetchall()
-
-    # Print the city names in a comma-separated format
-    print(", ".join([city[0] for city in cities]))
-
-    # Close the cursor and database connection
-    cursor.close()
+    cur.close()
     db.close()
+
+
+if __name__ == "__main__":
+    filter_cities()
