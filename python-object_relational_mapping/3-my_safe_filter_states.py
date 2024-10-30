@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 """
 Script that displays all values in the states table of hbtn_0e_0_usa
-where the name matches the argument provided.
+where the name matches the argument provided (safe from SQL injection).
 """
-
 import MySQLdb
 import sys
 
@@ -26,11 +25,9 @@ if __name__ == "__main__":
     # Create a cursor object
     cursor = db.cursor()
 
-    # Construct the SQL query using format
-    query = "SELECT * FROM states WHERE name = '{}' ORDER BY id ASC".format(state_name)
-
-    # Execute the query
-    cursor.execute(query)
+    # Use parameterized query to avoid SQL injection
+    query = "SELECT * FROM states WHERE name = %s ORDER BY id ASC"
+    cursor.execute(query, (state_name,))
 
     # Fetch all the results
     results = cursor.fetchall()
@@ -41,4 +38,4 @@ if __name__ == "__main__":
 
     # Close the cursor and database connection
     cursor.close()
-    db.close() 
+    db.close()

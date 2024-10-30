@@ -1,20 +1,22 @@
 #!/usr/bin/python3
 """
-This module contains the State class and the Base instance.
+Contains the class definition of a State and an instance of Base
 """
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
-
+# Create instance of Base from declarative_base
 Base = declarative_base()
-
 
 class State(Base):
     """
-    State class
+    Class representing a State in the database, linked to the 'states' table.
     """
-    __tablename__ = "states"
+    __tablename__ = 'states'
 
-    id = Column(Integer, primary_key=True,
-                autoincrement=True, nullable=False)
+    # Auto-generated, unique integer id, primary key
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # Name of the state, max 128 characters, can't be null
     name = Column(String(128), nullable=False)
